@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on 昆乱不挡</title>
+    <link>https://luminocean.github.io/tags/</link>
+    <description>Recent content in Tags on 昆乱不挡</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 08 Nov 2020 00:01:07 +0800</lastBuildDate><atom:link href="https://luminocean.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>frontend</title>
+      <link>https://luminocean.github.io/tags/frontend/</link>
+      <pubDate>Sun, 08 Nov 2020 00:01:07 +0800</pubDate>
+      
+      <guid>https://luminocean.github.io/tags/frontend/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>network</title>
+      <link>https://luminocean.github.io/tags/network/</link>
+      <pubDate>Sun, 08 Nov 2020 00:01:07 +0800</pubDate>
+      
+      <guid>https://luminocean.github.io/tags/network/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

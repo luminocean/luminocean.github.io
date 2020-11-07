@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>frontend on 昆乱不挡</title>
+    <link>https://luminocean.github.io/tags/frontend/</link>
+    <description>Recent content in frontend on 昆乱不挡</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 08 Nov 2020 00:01:07 +0800</lastBuildDate><atom:link href="https://luminocean.github.io/tags/frontend/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title> Webpack: 从0到1</title>
+      <link>https://luminocean.github.io/posts/webpack-%E4%BB%8E0%E5%88%B01/</link>
+      <pubDate>Sun, 08 Nov 2020 00:01:07 +0800</pubDate>
+      
+      <guid>https://luminocean.github.io/posts/webpack-%E4%BB%8E0%E5%88%B01/</guid>
+      <description>0. 前言 说实话，我不太喜欢Webpack。
+作为一个从0.12时代开始使用Node.js的用户来说，我一直都很喜欢（或习惯于）CommonJS风格的模块组织风格。于是当我见到Browserify的时候，不禁惊叹于这个将Node.js原封不动就可以挪到前端的想法，机智又简单。加上Gulp的工具链支持，算得上一个很漂亮的前端构建方案。
+但是紧随其后出现的Webpack以其强大的功能以及社区支持在近几年迅速赶超，俨然已成为前端构建工具的事实标准。对于这一点我还是有一点失落的。更让我失落的是，Webpack却似乎没有一个当红工具所应有的易用性。每次使用Webpack都需要查文档，而且每次在查了文档以后都有一种死记硬背的感觉。略带讽刺的是，居然还出现了Create App - your tool for starting a new webpack or Parcel project这样的的网站，某种程度上Webpack配置的复杂性可见一斑。顺带一句，Parcel这样标榜零配置的项目的出现不知算不算是对Webpack此类配置繁琐工具的一种反击？
+不管怎样，在未来的两到三年内我相信Webpack依然会在前端构建领域占据统治地位。即便未来并非如此，Webpack也会是一个重新审视前端构建流程的绝好样本。这也是我写作本文的初衷。这不是另一篇（yet another）所谓的「Webpack教程」，而是一篇希望能从需求和设计思路出发试图诠释并理解Webpack的文章，也希望能对读者有一点启发或者借鉴意义。
+1. Why Webpack? 不管使用怎样的构建工具，最终构建完成的前端项目无非还是主要三个元素：HTML, Javascript和CSS（当然，也存在着诸如ASM.js或者Wasm之类的技术，当然也可以认为是Javascript的变体）。而这些元素最终都是以最古典的方式组织起来的：HTML引用js和css，再由浏览器进行获取与渲染。但是如果我们也使用这类原始的组织方式的话，有很多问题无法很好的解决，比如：
+ 多个js文件都由HTML来引用，共享一个全局空间，存在着js文件之间依赖关系混乱的问题 如果要使用Typescript或者SCSS之类的上层工具，还需要专门维护源文件到目标文件的编译关系 使用第三方库依然不方便 通过使用Webpack，我们可以把很多任务进行一站式地处理。一旦配置完成以后，构建任务也就是一行命令的事儿。  2. 示例项目 由于我们将使用npm管理所有的工具链，我们先从创建一个空的npm项目开始：
+# terminal mkdir webpack-playground cd webpack-playground npm init -y 添加一些文件以后，项目结构如下：
+- dist (empty) - node_modules - src - app.js - hello.js - index.html - package.json - package-lock.json - webpack.config.js 其中：
+&amp;lt;!-- ./index.html --&amp;gt; &amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html&amp;gt; &amp;lt;head&amp;gt; &amp;lt;title&amp;gt;Webpack!</description>
+    </item>
+    
+  </channel>
+</rss>

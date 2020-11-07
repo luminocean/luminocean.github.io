@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="" />
+	
+	
+	
+	<title> Webpack: 从0到1 ｜ 昆乱不挡</title>
+	
+    
+    
+    <meta name="description" content="0. 前言 说实话，我不太喜欢Webpack。
+作为一个从0.12时代开始使用Node.js的用户来说，我一直都很喜欢（或习惯于）CommonJS风格的模块组织风格。于是当我见到Browserify的时候，不禁惊叹于这个将Node.js原封不动就可以挪到前端的想法，机智又简单。加上Gulp的工具链支持，算得上一个很漂亮的前端构建方案。
+但是紧随其后出现的Webpack以其强大的功能以及社区支持在近几年迅速赶超，俨然已成为前端构建工具的事实标准。对于这一点我还是有一点失落的。更让我失落的是，Webpack却似乎没有一个当红工具所应有的易用性。每次使用Webpack都需要查文档，而且每次在查了文档以后都有一种死记硬背的感觉。略带讽刺的是，居然还出现了Create App - your tool for starting a new webpack or Parcel project这样的的网站，某种程度上Webpack配置的复杂性可见一斑。顺带一句，Parcel这样标榜零配置的项目的出现不知算不算是对Webpack此类配置繁琐工具的一种反击？
+不管怎样，在未来的两到三年内我相信Webpack依然会在前端构建领域占据统治地位。即便未来并非如此，Webpack也会是一个重新审视前端构建流程的绝好样本。这也是我写作本文的初衷。这不是另一篇（yet another）所谓的「Webpack教程」，而是一篇希望能从需求和设计思路出发试图诠释并理解Webpack的文章，也希望能对读者有一点启发或者借鉴意义。
+1. Why Webpack? 不管使用怎样的构建工具，最终构建完成的前端项目无非还是主要三个元素：HTML, Javascript和CSS（当然，也存在着诸如ASM.js或者Wasm之类的技术，当然也可以认为是Javascript的变体）。而这些元素最终都是以最古典的方式组织起来的：HTML引用js和css，再由浏览器进行获取与渲染。但是如果我们也使用这类原始的组织方式的话，有很多问题无法很好的解决，比如：
+ 多个js文件都由HTML来引用，共享一个全局空间，存在着js文件之间依赖关系混乱的问题 如果要使用Typescript或者SCSS之类的上层工具，还需要专门维护源文件到目标文件的编译关系 使用第三方库依然不方便 通过使用Webpack，我们可以把很多任务进行一站式地处理。一旦配置完成以后，构建任务也就是一行命令的事儿。  2. 示例项目 由于我们将使用npm管理所有的工具链，我们先从创建一个空的npm项目开始：
+# terminal mkdir webpack-playground cd webpack-playground npm init -y 添加一些文件以后，项目结构如下：
+- dist (empty) - node_modules - src - app.js - hello.js - index.html - package.json - package-lock.json - webpack.config.js 其中：
+&amp;lt;!-- ./index.html --&amp;gt; &amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html&amp;gt; &amp;lt;head&amp;gt; &amp;lt;title&amp;gt;Webpack!" />
+    
+
+    
+
+	
+    
+    <link rel="shortcut icon" href="https://luminocean.github.io/images/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://luminocean.github.io/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://luminocean.github.io/css/zozo.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://luminocean.github.io/css/highlight.css" />
+
+    
+    
+</head>
+
+<body>
+    <div class="main animate__animated animate__fadeInDown">
+        <div class="nav_container animated fadeInDown">
+    <div class="site_nav" id="site_nav">
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/posts/">Archive</a>
+            </li>
+            
+            <li>
+                <a href="/tags/">Tags</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="menu_icon">
+        <a id="menu_icon"><i class="ri-menu-line"></i></a>
+    </div>
+</div>
+        <div class="header animated fadeInDown">
+    <div class="site_title_container">
+        <div class="site_title">
+            <h1>
+                <a href="https://luminocean.github.io/">
+                    <span>昆乱不挡</span>
+                </a>
+            </h1>
+        </div>
+        <div class="description">
+            <p class="sub_title"></p>
+            <div class="my_socials">
+                
+                
+                <a href="https://github.com/luminocean" title="github" target="_blank"><i class="ri-github-fill"></i></a>
+                
+                
+                <a href="https://luminocean.github.io/index.xml" type="application/rss+xml" title="rss" target="_blank"><i
+                        class="ri-rss-fill"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="content">
+            <div class="post_page">
+                <div class="post animate__animated animate__fadeInDown">
+                    <div class="post_title post_detail_title">
+                        <h2><a href='/posts/webpack-%E4%BB%8E0%E5%88%B01/'> Webpack: 从0到1</a></h2>
+                        <span class="date">2020.11.08</span>
+                    </div>
+                    <div class="post_content markdown"><h1 id="0-前言">0. 前言</h1>
+<p>说实话，我不太喜欢Webpack。</p>
+<p>作为一个从0.12时代开始使用Node.js的用户来说，我一直都很喜欢（或习惯于）CommonJS风格的模块组织风格。于是当我见到Browserify的时候，不禁惊叹于这个将Node.js原封不动就可以挪到前端的想法，机智又简单。加上Gulp的工具链支持，算得上一个很漂亮的前端构建方案。</p>
+<p>但是紧随其后出现的Webpack以其强大的功能以及社区支持在近几年迅速赶超，俨然已成为前端构建工具的事实标准。对于这一点我还是有一点失落的。更让我失落的是，Webpack却似乎没有一个当红工具所应有的易用性。每次使用Webpack都需要查文档，而且每次在查了文档以后都有一种死记硬背的感觉。略带讽刺的是，居然还出现了<a href="https://createapp.dev/webpack">Create App - your tool for starting a new webpack or Parcel project</a>这样的的网站，某种程度上Webpack配置的复杂性可见一斑。顺带一句，Parcel这样标榜零配置的项目的出现不知算不算是对Webpack此类配置繁琐工具的一种反击？</p>
+<p>不管怎样，在未来的两到三年内我相信Webpack依然会在前端构建领域占据统治地位。即便未来并非如此，Webpack也会是一个重新审视前端构建流程的绝好样本。这也是我写作本文的初衷。这不是另一篇（yet another）所谓的「Webpack教程」，而是一篇希望能从需求和设计思路出发试图诠释并理解Webpack的文章，也希望能对读者有一点启发或者借鉴意义。</p>
+<h1 id="1-why-webpack">1. Why Webpack?</h1>
+<p>不管使用怎样的构建工具，最终构建完成的前端项目无非还是主要三个元素：HTML, Javascript和CSS（当然，也存在着诸如ASM.js或者Wasm之类的技术，当然也可以认为是Javascript的变体）。而这些元素最终都是以最古典的方式组织起来的：HTML引用js和css，再由浏览器进行获取与渲染。但是如果我们也使用这类原始的组织方式的话，有很多问题无法很好的解决，比如：</p>
+<ul>
+<li>多个js文件都由HTML来引用，共享一个全局空间，存在着js文件之间依赖关系混乱的问题</li>
+<li>如果要使用Typescript或者SCSS之类的上层工具，还需要专门维护源文件到目标文件的编译关系</li>
+<li>使用第三方库依然不方便
+通过使用Webpack，我们可以把很多任务进行一站式地处理。一旦配置完成以后，构建任务也就是一行命令的事儿。</li>
+</ul>
+<h1 id="2-示例项目">2. 示例项目</h1>
+<p>由于我们将使用npm管理所有的工具链，我们先从创建一个空的npm项目开始：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#998;font-style:italic"># terminal</span>
+mkdir webpack-playground
+<span style="color:#999">cd</span> webpack-playground
+npm init -y
+</code></pre></div><p>添加一些文件以后，项目结构如下：</p>
+<pre><code>- dist (empty)
+- node_modules
+- src
+  - app.js
+  - hello.js
+- index.html
+- package.json
+- package-lock.json
+- webpack.config.js
+</code></pre><p>其中：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#998;font-style:italic">&lt;!-- ./index.html --&gt;</span>
+<span style="color:#999;font-weight:bold">&lt;!DOCTYPE html&gt;</span>
+&lt;<span style="color:#000080">html</span>&gt;
+&lt;<span style="color:#000080">head</span>&gt;
+    &lt;<span style="color:#000080">title</span>&gt;Webpack!&lt;/<span style="color:#000080">title</span>&gt;
+&lt;/<span style="color:#000080">head</span>&gt;
+&lt;<span style="color:#000080">body</span>&gt;
+    &lt;<span style="color:#000080">div</span> <span style="color:#008080">id</span><span style="font-weight:bold">=</span><span style="color:#b84">&#34;root&#34;</span>&gt;&lt;/<span style="color:#000080">div</span>&gt;
+    <span style="color:#998;font-style:italic">&lt;!-- this path can be served by either a dev server 
+</span><span style="color:#998;font-style:italic">        or production static server --&gt;</span>
+    &lt;<span style="color:#000080">script</span> <span style="color:#008080">src</span><span style="font-weight:bold">=</span><span style="color:#b84">&#34;/dist/bundle.js&#34;</span>&gt;&lt;/<span style="color:#000080">script</span>&gt;
+&lt;/<span style="color:#000080">body</span>&gt;
+&lt;/<span style="color:#000080">html</span>&gt;
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// ./src/hello.js
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">export</span> <span style="font-weight:bold">function</span> sayHello() {
+    alert(<span style="color:#b84">&#34;Hello!&#34;</span>)
+}
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// ./src/app.js
+</span><span style="color:#998;font-style:italic">// use {} to wrap non-default exports
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">import</span> { sayHello } from <span style="color:#b84">&#39;./hello&#39;</span>
+
+<span style="font-weight:bold">const</span> root <span style="font-weight:bold">=</span> <span style="color:#999">document</span>.getElementById(<span style="color:#b84">&#39;root&#39;</span>);
+<span style="font-weight:bold">const</span> button <span style="font-weight:bold">=</span> <span style="color:#999">document</span>.createElement(<span style="color:#b84">&#39;button&#39;</span>);
+button.textContent <span style="font-weight:bold">=</span> <span style="color:#b84">&#39;Click&#39;</span>;
+button.onclick <span style="font-weight:bold">=</span> () =&gt; {
+    sayHello();
+}
+root.append(button);
+</code></pre></div><p>和传统的结构相比，在这里我们做了两点改动：</p>
+<ul>
+<li>HTML中引用了<code>/dist/bundle.js</code>这个不存在的文件。我们将在之后构建这个文件。</li>
+<li>JS文件被拆成了两个，之间通过ES6 Module的语法组织起来。</li>
+</ul>
+<p>为了把这个项目跑起来，我们尝试使用Webpack。首先安装：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">npm install webpack webpack-cli webpack-dev-server --save-dev
+</code></pre></div><p>其中，<code>webpack</code>是webpack的基础库。而<code>webpack-cli</code>则封装了webpack的CLI工具，使得我们可以使用<code>webpack</code>命令来构建项目。</p>
+<p>接下来我们对Webpack做一点基础配置：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// regular Node.js module
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">const</span> path <span style="font-weight:bold">=</span> require(<span style="color:#b84">&#39;path&#39;</span>);
+
+module.exports <span style="font-weight:bold">=</span> {
+    entry<span style="font-weight:bold">:</span> <span style="color:#b84">&#39;./src/app.js&#39;</span>,
+    output<span style="font-weight:bold">:</span> {
+        <span style="color:#998;font-style:italic">// webpack requires this to be an absolute path
+</span><span style="color:#998;font-style:italic"></span>        path<span style="font-weight:bold">:</span> path.resolve(__dirname, <span style="color:#b84">&#39;dist&#39;</span>),
+        filename<span style="font-weight:bold">:</span> <span style="color:#b84">&#39;bundle.js&#39;</span>,
+        <span style="color:#998;font-style:italic">// indicates how to render the resource directory in HTML files.
+</span><span style="color:#998;font-style:italic"></span>		  <span style="color:#998;font-style:italic">// webpack-dev-server may also read this field.
+</span><span style="color:#998;font-style:italic"></span>        publicPath<span style="font-weight:bold">:</span> <span style="color:#b84">&#39;dist/&#39;</span>
+    },
+    <span style="color:#998;font-style:italic">// to suppress the missing mode warning 
+</span><span style="color:#998;font-style:italic"></span>    mode<span style="font-weight:bold">:</span> <span style="color:#b84">&#39;none&#39;</span>
+}
+</code></pre></div><p>然后我们就可以在项目根目录下使用<code>webpack</code>命令来构建了。但是由于我们使用的是局部安装，<code>webpack</code>可执行文件被安装到了<code>node_modules/.bin</code>里面，因此直接执行命令是找不到的。我们当然可以直接执行<code>./node_modules/.bin/webpack</code>，但是为了简洁和方便起见，可以把命令放到<code>package.json</code>里面：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// ...
+</span><span style="color:#998;font-style:italic"></span><span style="color:#b84">&#34;scripts&#34;</span><span style="font-weight:bold">:</span> {
+    <span style="color:#b84">&#34;build&#34;</span><span style="font-weight:bold">:</span> <span style="color:#b84">&#34;webpack -p&#34;</span>,
+    <span style="color:#b84">&#34;dev&#34;</span><span style="font-weight:bold">:</span> <span style="color:#b84">&#34;webpack-dev-server&#34;</span>
+},
+<span style="color:#998;font-style:italic">// ...
+</span></code></pre></div><p>执行<code>npm run build</code>即可构建，产物<code>bundle.js</code>在<code>./dist</code>里面。<code>-p</code>会对产物进行压缩。
+使用<code>npm run dev</code>的话会启动一个开发服务器，产物会被放在内存中。Dev Server会读取配置中的<code>output.publicPath</code>来响应浏览器的资源请求，如果匹配则中内存中取出结果并返回。当然<code>output.publicPath</code>可能也会被其它Webpack的组件所读取，此处暂不讨论。</p>
+<p>启动Dev Server以后，访问<code>localhost:8080</code>即可验证功能的完整性，可见Webpack已经完成了构建。或者也可以build以后单独起一个static server或者干脆<code>python -m http.server 8080</code>来查看结果。</p>
+<h1 id="3-使用图片scsses6">3. 使用图片/SCSS/ES6</h1>
+<h3 id="31-import-图片">3.1 Import 图片</h3>
+<p>现在才刚刚开始。接下来我们会尝试引入一些更高级的资源。首先，我们来加一张图片：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p assets
+<span style="color:#998;font-style:italic"># Author page: [wlop | DeviantArt](https://www.deviantart.com/wlop)</span>
+curl -L https://bit.ly/2Xr5dHE &gt; assets/scene.jpg
+</code></pre></div><p>为了使用这张图片，我们需要使用一个<code>&lt;img&gt;</code>并把其<code>src</code>指向一个正确的位置。Webpack支持一种反直觉的处理方式：把图片作为一个资源import进js文件中。如下：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// ./src/app.js
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">import</span> scenePic from <span style="color:#b84">&#39;../assets/scene.jpg&#39;</span>;
+<span style="color:#998;font-style:italic">// ...
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">const</span> img <span style="font-weight:bold">=</span> <span style="color:#999">document</span>.createElement(<span style="color:#b84">&#39;img&#39;</span>);
+img.alt <span style="font-weight:bold">=</span> <span style="color:#b84">&#39;Scene&#39;</span>;
+<span style="color:#998;font-style:italic">// in case we need to add some styling to the image
+</span><span style="color:#998;font-style:italic"></span>img.classList.add(<span style="color:#b84">&#39;scene&#39;</span>);
+<span style="color:#998;font-style:italic">// render image link at compile time
+</span><span style="color:#998;font-style:italic"></span>img.src <span style="font-weight:bold">=</span> scenePic;
+root.appendChild(img);
+</code></pre></div><p>可以看到，引入的<code>scenePic</code>其实只是一个字符串（完成后面的配置并构建后，可以发现这个值形如<code>&quot;dist/5839523a9d082a8f4ce41c9db651c870.jpg&quot;</code>，其中<code>dist/</code>部分就是我们之前配的<code>publicPath</code>字段）。</p>
+<p>显然Javascript本身不可能支持这样的语法，我们需要一个Webpack插件来实现这个效果。安装：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">npm install file-loader --save-dev
+</code></pre></div><p>并配置Webpack:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// ./webpack.config.js
+</span><span style="color:#998;font-style:italic">// ...
+</span><span style="color:#998;font-style:italic"></span>module<span style="font-weight:bold">:</span> {
+        rules<span style="font-weight:bold">:</span> [
+            {
+                test<span style="font-weight:bold">:</span> <span style="color:#808000">/\.(jpg|png)$/</span>,
+                use<span style="font-weight:bold">:</span> [<span style="color:#b84">&#39;file-loader&#39;</span>]
+            }
+        ]
+    }
+<span style="color:#998;font-style:italic">// ...
+</span></code></pre></div><p>这里的配置指示Webpack在处理到jpg的import操作时，使用file-loader来处理。而file-loader则会根据路径找到图片文件，计算其hash值，将其与<code>publicPath</code>字段合并后的字符串返回作为import后的默认值。</p>
+<p>Build并验证效果。</p>
+<h3 id="32-import-scss">3.2 Import SCSS</h3>
+<p>接下来我们尝试加入SCSS：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="font-weight:bold">//</span> <span style="font-weight:bold">./</span><span style="color:#000080">src</span><span style="font-weight:bold">/</span><span style="color:#000080">app</span><span style="font-weight:bold">/</span><span style="color:#000080">scss</span>
+.<span style="color:#458;font-weight:bold">scene</span> {
+    <span style="font-weight:bold">width</span>: <span style="color:#099">200</span><span style="color:#458;font-weight:bold">px</span>;
+}
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// ./src/app.js
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">import</span> <span style="color:#b84">&#39;./app.scss&#39;</span>
+</code></pre></div><p>安装对应SCSS loaders：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">npm install sass-loader node-sass style-loader css-loader --save-dev
+</code></pre></div><p>其中node-sass是用来实际编译SCSS到CSS的工具。最后配置Webpack:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// ./webpack.config.js
+</span><span style="color:#998;font-style:italic">// ...
+</span><span style="color:#998;font-style:italic"></span>module<span style="font-weight:bold">:</span> {
+        rules<span style="font-weight:bold">:</span> [
+            <span style="color:#998;font-style:italic">// ...
+</span><span style="color:#998;font-style:italic"></span>            {
+                test<span style="font-weight:bold">:</span> <span style="color:#808000">/\.scss$/</span>,
+                use<span style="font-weight:bold">:</span> [
+                    <span style="color:#b84">&#39;style-loader&#39;</span>, <span style="color:#998;font-style:italic">// creates style nodes from JS strings
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#b84">&#39;css-loader&#39;</span>, <span style="color:#998;font-style:italic">// load CSS as strings
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#b84">&#39;sass-loader&#39;</span> <span style="color:#998;font-style:italic">// compiles Sass to CSS, using Node Sass by default
+</span><span style="color:#998;font-style:italic"></span>                ]
+            }
+        ]
+    }
+<span style="color:#998;font-style:italic">// ...
+</span></code></pre></div><p>有趣的是这里一口气配了三个loader，各司其职。</p>
+<p>Build并验证效果。</p>
+<h3 id="33-import-js新标准">3.3 Import JS新标准</h3>
+<p>添加如下配置，使用babel-loader即可在load任何js文件的时候进行文件转换，从而保证新特性一直可用：</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#998;font-style:italic">// ./webpack.config.js
+</span><span style="color:#998;font-style:italic">// ...
+</span><span style="color:#998;font-style:italic"></span>module<span style="font-weight:bold">:</span> {
+    rules<span style="font-weight:bold">:</span> [
+    <span style="color:#998;font-style:italic">// ...
+</span><span style="color:#998;font-style:italic"></span>        {
+            test<span style="font-weight:bold">:</span> <span style="color:#808000">/\.js$/</span>,
+            exclude<span style="font-weight:bold">:</span> <span style="color:#808000">/node_modules/</span>,
+            use<span style="font-weight:bold">:</span> {
+                loader<span style="font-weight:bold">:</span> <span style="color:#b84">&#39;babel-loader&#39;</span>,
+                options<span style="font-weight:bold">:</span> {
+                    presets<span style="font-weight:bold">:</span> [<span style="color:#b84">&#39;@babel/preset-env&#39;</span>]
+                }
+            }
+        }
+    ]
+}
+<span style="color:#998;font-style:italic">// ...
+</span></code></pre></div></div>
+                    <div class="post_footer">
+                        
+                        <div class="meta">
+                            <div class="info">
+                                <span class="field tags">
+                                    <i class="ri-stack-line"></i>
+                                    
+                                    <a href="https://luminocean.github.io/tags/frontend/">frontend</a>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                
+                <div class="doc_comments"></div>
+                
+            </div>
+        </div>
+    </div>
+    <a id="back_to_top" href="#" class="back_to_top"><i class="ri-arrow-up-s-line"></i></a>
+    <footer class="footer">
+    <div class="powered_by">
+        <a href="https://varkai.com">Designed by VarKai,</a>
+        <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+    </div>
+
+    <div class="footer_slogan">
+        <span></span>
+    </div>
+</footer>
+    <script src="https://luminocean.github.io/js/jquery-3.5.1.min.js"></script>
+<link href="https://luminocean.github.io/css/fancybox.min.css" rel="stylesheet">
+<script src="https://luminocean.github.io/js/fancybox.min.js"></script>
+<script src="https://luminocean.github.io/js/zozo.js"></script>
+
+
+
+
+</body>
+
+</html>
