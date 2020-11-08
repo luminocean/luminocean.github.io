@@ -6,7 +6,22 @@
     <description>Recent content on 昆乱不挡</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 08 Nov 2019 00:01:07 +0800</lastBuildDate><atom:link href="https://luminocean.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 09 Nov 2020 01:20:58 +0800</lastBuildDate><atom:link href="https://luminocean.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title> 荷马系列00：开篇词</title>
+      <link>https://luminocean.github.io/posts/%E8%8D%B7%E9%A9%AC%E7%B3%BB%E5%88%9700%E5%BC%80%E7%AF%87%E8%AF%8D/</link>
+      <pubDate>Mon, 09 Nov 2020 01:20:58 +0800</pubDate>
+      
+      <guid>https://luminocean.github.io/posts/%E8%8D%B7%E9%A9%AC%E7%B3%BB%E5%88%9700%E5%BC%80%E7%AF%87%E8%AF%8D/</guid>
+      <description>一直以来，所谓技术博客的惯用写法大体都是将某个知识点从头到尾讲一遍，只是在讲解技巧和技术深度上有所区别。讲得好的，预设合理、层层递进。讲得不好的，堆砌实例、寥寥数语。无论好与不好，看多了未免显得有些乏味。为了写一些不一样的东西，我尝试开始写一个新的系列。
+在这个系列里，我将根据我个人的喜好挑选一些新老技术作为主题，剖析它们的用法，原理乃至历史与演变。有别于传统的行文结构，我将预设读者具备平均水平的计算机编程知识，并基于此、针对各个技术有别于其他同类技术的独特性（异常点）展开叙述，而并非对该技术本身进行线叙述。因此你将会看到我会在各个技术之间来回跳出跳入，只为给读者一个更立体的感知。
+目的是什么？直接目的是希望可以创造一种『知识转储』(brain dump)的文档形式，让读者可以高效地掌握某个知识。而实现高效的根基就是基于异常点的行文方式。毕竟关联与对比是理解一个事物的最好方式之一。
+你可能发现，上面的文字似乎有些许生硬。这是因为作为一个系列的开篇词，理应有它自己的严谨与威严。
+但是说实话，这样写东西实在是太累了，就先说到这儿吧。
+另：本系列的稿件统一在Bear上完成，然后专门写了md2hugo转换成Hugo格式发布。对，确实有种为了醋而去包了一顿饺子的意思。
+另II: 这个系列叫荷马。没错，荷马史诗的荷马。目的是希望和荷马史诗一样歌颂些什么。只不过歌颂的不是古希腊传说中的英雄们，而是现代的魔法师们。</description>
+    </item>
+    
     <item>
       <title> Webpack: 从0到1</title>
       <link>https://luminocean.github.io/posts/webpack-%E4%BB%8E0%E5%88%B01/</link>

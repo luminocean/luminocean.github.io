@@ -3,6 +3,31 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://luminocean.github.io/posts/%E8%8D%B7%E9%A9%AC%E7%B3%BB%E5%88%9700%E5%BC%80%E7%AF%87%E8%AF%8D/</loc>
+    <lastmod>2020-11-09T01:20:58+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://luminocean.github.io/tags/misc/</loc>
+    <lastmod>2020-11-09T01:20:58+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://luminocean.github.io/posts/</loc>
+    <lastmod>2020-11-09T01:20:58+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://luminocean.github.io/tags/</loc>
+    <lastmod>2020-11-09T01:20:58+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://luminocean.github.io/</loc>
+    <lastmod>2020-11-09T01:20:58+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://luminocean.github.io/posts/webpack-%E4%BB%8E0%E5%88%B01/</loc>
     <lastmod>2019-11-08T00:01:07+08:00</lastmod>
   </url>
@@ -24,21 +49,6 @@
   
   <url>
     <loc>https://luminocean.github.io/tags/network/</loc>
-    <lastmod>2019-11-08T00:01:07+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://luminocean.github.io/posts/</loc>
-    <lastmod>2019-11-08T00:01:07+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://luminocean.github.io/tags/</loc>
-    <lastmod>2019-11-08T00:01:07+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://luminocean.github.io/</loc>
     <lastmod>2019-11-08T00:01:07+08:00</lastmod>
   </url>
   
