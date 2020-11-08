@@ -6,11 +6,11 @@
     <description>Recent content in frontend on 昆乱不挡</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 08 Nov 2020 00:01:07 +0800</lastBuildDate><atom:link href="https://luminocean.github.io/tags/frontend/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 08 Nov 2019 00:01:07 +0800</lastBuildDate><atom:link href="https://luminocean.github.io/tags/frontend/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title> Webpack: 从0到1</title>
       <link>https://luminocean.github.io/posts/webpack-%E4%BB%8E0%E5%88%B01/</link>
-      <pubDate>Sun, 08 Nov 2020 00:01:07 +0800</pubDate>
+      <pubDate>Fri, 08 Nov 2019 00:01:07 +0800</pubDate>
       
       <guid>https://luminocean.github.io/posts/webpack-%E4%BB%8E0%E5%88%B01/</guid>
       <description>0. 前言 说实话，我不太喜欢Webpack。
